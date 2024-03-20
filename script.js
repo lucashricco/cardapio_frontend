@@ -32,4 +32,9 @@ menu.addEventListener("click", function(event){
 
     let ParentButton = event.target.closest(".add-to-cart-btn")
     
+    if(ParentButton){
+        const name = ParentButton.getAttribute("data-name")
+        const price = ParentButton.getAttribute("data-price")
+
+    }
 })

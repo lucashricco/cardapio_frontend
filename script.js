@@ -15,7 +15,8 @@ let cart = [];
 
 //chamando o modal de informações ao clicar no botao do carrinho
 cartBtn.addEventListener("click",function(){
-    cartModal.style.display = "flex"
+    updateCartModal();
+    cartModal.style.display = "flex"  
 })
 
 //fechar o modal quando clicar fora ou no botao fechar
@@ -66,8 +67,54 @@ function updateCartModal(){
 
     cart.forEach(item =>{
         const cartItemElement = document.createElement("div");
+        cartItemElement.classList.add("flex", "justify-between", "mb-4", "flex-col")
+        cartItemElement.innerHTML = `
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="font-medium">${item.name}</p>
+                <p class="font-medium">Qtde: ${item.quantity}</p>
+                <p class="font-medium">R$ ${item.price.toFixed(2)}</p>
+            </div>
 
-        
+                <button class="remove-btn" data-name="${item.name}"> (X) Remover Item </button>
 
+        </div>
+        `
+        //calcular valor total
+        total += item.price * item.quantity;
+        cartItemsContainer.appendChild(cartItemElement)
     })
+
+    //formatar valor total para o formato de moeda
+    cartTotal.textContent = total.toLocaleString("pt-BR",{
+        style: "currency",
+        currency: "BRL"
+    });
+
+    //atualizar contador de itens (footer) do carrinho
+    cartCounter.innerHTML = cart.length;
+}
+
+//função para remover item do carrinho
+cartItemsContainer.addEventListener("click", function(event){
+    if(event.target.classList.contains("remove-btn")){
+        const name = event.target.getAttribute("data-name")
+
+        removeItemCart(name);
+    }
+})
+
+function removeItemCart(name){
+    const index = cart.findIndex(item => item.name === name);
+    if(index !== -1){
+        const item = cart[index];
+        
+        if(item.quantity > 1){
+            item.quantity -= 1;
+            updateCartModal();
+            return;
+        }
+        cart.splice(index,1);
+        updateCartModal();
+    }
 }
